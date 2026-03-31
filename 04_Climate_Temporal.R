@@ -15,9 +15,9 @@ zoo_data <- read_csv("zooplankton_annual_summary_all.csv") %>%
                          "ssp534-over",
                          "ssp585"))
 
-# Calculate baseline (mean biomass for 2005-2014 historical period)
+# Calculate baseline (mean biomass for 1995-2014 historical period)
 baseline <- zoo_data %>%
-  filter(Scenario == "historical", Year >= 2005, Year <= 2014) %>%
+  filter(Scenario == "historical", Year >= 1995, Year <= 2014) %>%
   group_by(Variable, Model) %>%
   summarise(baseline_mean = mean(Mean, na.rm = TRUE), .groups = "drop")
 
@@ -75,7 +75,7 @@ scenario_colors <- c(
 # Function to create plot for a single model
 plot_single_model <- function(data, model_name) {
   plot_data <- data %>% filter(Model == model_name)
-  
+
   # Create a complete grid of all scenarios and years to ensure all legend items appear
   # even if a model doesn't have data for certain scenarios
   all_years <- unique(data$Year)
@@ -85,7 +85,7 @@ plot_single_model <- function(data, model_name) {
     stringsAsFactors = FALSE
   ) %>%
     mutate(Scenario = factor(Scenario, levels = scenario_levels))
-  
+
   # Left join to preserve all scenario levels in the data
   plot_data <- scenario_grid %>%
     left_join(plot_data, by = c("Year", "Scenario"))

@@ -227,3 +227,171 @@ for (var in variables) {
 
   message(paste("Saved:", output_file))
 }
+
+# ============================================
+# CREATE MULTI-MODEL MEAN MAPS
+# ============================================
+
+# Function to calculate multi-model mean for a variable and scenario
+calculate_multimodel_mean <- function(var_name, scenario_name) {
+  
+  # Get all files for this variable and scenario
+  files <- spatial_files %>%
+    filter(Variable == var_name, Scenario == scenario_name) %>%
+    pull(Output_file)
+  
+  if (length(files) == 0) {
+    return(NULL)
+  }
+  
+  # Load all rasters
+  raster_list <- map(files, ~rast(file.path(spatial_dir, .x)))
+  
+  # Stack them and calculate mean
+  raster_stack <- rast(raster_list)
+  mean_raster <- mean(raster_stack, na.rm = TRUE)
+  
+  return(mean_raster)
+}
+
+# Function to plot a single scenario mean map
+plot_scenario_mean <- function(mean_raster, scenario_name) {
+  
+  # Get scenario label
+  scenario_label <- scenario_label_map[scenario_name]
+  if (is.na(scenario_label)) scenario_label <- scenario_name
+  
+  # Create plot
+  p <- ggplot() +
+    geom_spatraster(data = mean_raster) +
+    geom_sf(data = world, color = "gray30", linewidth = 0.3, fill = NA) +
+    scale_fill_gradientn(
+      colors = c("#053061", "#2166AC", "#4393C3", "#92C5DE", "#D1E5F0",
+                 "#F7F7F7", "#FDDBC7", "#F4A582", "#D6604D", "#B2182B", "#67001F"),
+      limits = c(-50, 50),
+      na.value = "transparent",
+      name = "Change in\nbiomass (%)",
+      oob = scales::squish
+    ) +
+    coord_sf(expand = FALSE) +
+    labs(title = scenario_label) +
+    theme_minimal(base_size = 10) +
+    theme(
+      panel.grid = element_line(color = "gray90", linewidth = 0.3),
+      panel.background = element_rect(fill = "gray95", color = NA),
+      plot.background = element_rect(fill = "white", color = NA),
+      axis.text = element_blank(),
+      axis.title = element_blank(),
+      plot.title = element_text(hjust = 0.5, face = "bold", size = 11),
+      legend.key.height = unit(1.2, "cm"),
+      legend.key.width = unit(0.4, "cm"),
+      legend.title = element_text(size = 9),
+      legend.text = element_text(size = 8),
+      plot.margin = margin(5, 5, 5, 5)
+    )
+  
+  return(p)
+}
+
+# Function to create multi-model mean plot for a variable
+create_multimodel_mean_plot <- function(var_name) {
+  
+  # Get available scenarios for this variable
+  var_scenarios <- spatial_files %>%
+    filter(Variable == var_name) %>%
+    pull(Scenario) %>%
+    unique()
+  
+  # Filter to our scenario order
+  available_scenarios <- scenario_order[scenario_order %in% var_scenarios]
+  
+  if (length(available_scenarios) == 0) {
+    message(paste("No scenarios available for", var_name))
+    return(NULL)
+  }
+  
+  # Calculate mean for each scenario
+  plot_list <- list()
+  
+  for (scenario in available_scenarios) {
+    message(paste("  Calculating multi-model mean for", var_name, scenario))
+    
+    mean_raster <- calculate_multimodel_mean(var_name, scenario)
+    
+    if (!is.null(mean_raster)) {
+      p <- plot_scenario_mean(mean_raster, scenario)
+      plot_list[[scenario]] <- p
+    }
+  }
+  
+  if (length(plot_list) == 0) {
+    return(NULL)
+  }
+  
+  # Create variable label
+  var_label <- case_when(
+    var_name == "zooc" ~ "All Zooplankton",
+    var_name == "zmicro" ~ "Microzooplankton",
+    var_name == "zmeso" ~ "Mesozooplankton",
+    TRUE ~ var_name
+  )
+  
+  # Combine plots using patchwork
+  # Use 2 columns for better layout
+  n_plots <- length(plot_list)
+  n_cols <- min(3, n_plots)  # Max 3 columns
+  
+  combined <- wrap_plots(plot_list, ncol = n_cols) +
+    plot_layout(guides = "collect") +
+    plot_annotation(
+      title = paste(var_label, "- Multi-Model Mean Change (1995-2014 to 2080-2100)"),
+      theme = theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 14))
+    ) &
+    theme(legend.position = "right")
+  
+  return(combined)
+}
+
+# Create and save multi-model mean plots for each variable
+message("\n============================================")
+message("Creating multi-model mean maps")
+message("============================================\n")
+
+for (var in variables) {
+  
+  # Check if this variable has data
+  if (!var %in% available_variables) {
+    message(paste("Skipping", var, "- no spatial data files found"))
+    next
+  }
+  
+  message(paste("Creating multi-model mean plot for", var))
+  
+  mean_plot <- create_multimodel_mean_plot(var)
+  
+  if (!is.null(mean_plot)) {
+    # Display plot
+    print(mean_plot)
+    
+    # Save plot
+    output_file <- file.path("Figures", paste0("zooplankton_multimodel_mean_", var, ".png"))
+    
+    # Calculate dimensions based on number of scenarios
+    var_scenarios <- spatial_files %>%
+      filter(Variable == var) %>%
+      pull(Scenario) %>%
+      unique()
+    available_scenarios <- scenario_order[scenario_order %in% var_scenarios]
+    n_scenarios <- length(available_scenarios)
+    n_cols <- min(3, n_scenarios)
+    n_rows <- ceiling(n_scenarios / n_cols)
+    
+    plot_width <- 5 * n_cols + 1.5  # Extra space for legend
+    plot_height <- 3.5 * n_rows + 1  # Extra space for title
+    
+    ggsave(output_file, mean_plot,
+           width = plot_width, height = plot_height, dpi = 300)
+    
+    message(paste("Saved:", output_file))
+  }
+}
