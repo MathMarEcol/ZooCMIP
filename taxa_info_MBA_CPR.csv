@@ -1,0 +1,555 @@
+accepted_id,taxa_name,aphia_id,counting_method,is_grouping
+1,Calanus I-IV,104152,2,0
+3,Para-Pseudocalanus spp.,1100,2,1
+4,Temora longicornis,104878,2,0
+5,Acartia spp. (unidentified),104108,2,0
+6,Centropages typicus,104499,2,0
+7,Centropages hamatus,104496,2,0
+8,Isias clavipes,104501,2,0
+9,Clausocalanus spp.,104161,2,0
+10,Oithona spp.,106485,2,0
+11,Corycaeus spp.,128634,2,0
+12,Calanus Total Traverse,104152,2,1
+13,Total Copepods,1080,2,1
+19,Centropages furcatus,104495,2,0
+20,Saphirella tropica,196788,2,0
+21,Farranula gracilis,128813,2,0
+22,Farranula spp. (Unidentified),128636,2,0
+30,Podon spp.,106269,2,0
+31,Evadne spp.,106267,2,0
+34,Chaetognatha Traverse,2081,2,0
+35,Cyphonautes,146142,2,0
+36,Echinoderm larvae,1806,2,0
+39,Clione shells,137793,2,0
+40,Calanus finmarchicus,104464,1,0
+41,Calanus helgolandicus,104466,1,0
+42,Calanus glacialis,104465,1,0
+43,Calanus V-VI Total (Atlantic-fin hel glac),104152,1,1
+44,Calanus hyperboreus,104467,1,0
+45,Neocalanus gracilis,104471,1,0
+47,Nannocalanus minor,104469,1,0
+48,Calanoides carinatus,104462,1,0
+50,Rhincalanus nasutus,104543,1,0
+51,Euchirella rostrata,104303,1,0
+53,Euchaeta acuta,104550,1,0
+55,Metridia lucens,104633,1,0
+56,Metridia longa,104632,1,0
+57,Pleuromamma robusta,104642,1,0
+58,Pleuromamma abdominalis,104637,1,0
+59,Pleuromamma borealis,104638,1,0
+60,Pleuromamma gracilis,104639,1,0
+61,Candacia armata,104474,1,0
+62,Labidocera spp. (Unidentified),104208,1,0
+63,Labidocera wollastoni,104736,1,0
+80,Tomopteris spp.,129715,1,0
+81,Gammaridea,1207,1,0
+82,Hyperiidea (Total),1205,1,1
+83,Decapoda larvae (Total),1130,1,1
+84,Clione limacina,139178,1,0
+85,Pneumodermopsis spp. (Unidentified),138366,1,0
+86,Euphausiacea Adult,1128,1,0
+87,Euphausiacea Juvenile,1128,1,0
+88,Euphausiacea Total,1128,1,1
+89,Chaetognatha eyecount,2081,1,0
+90,Fish eggs (Total),10194,1,1
+91,Fish larvae,10194,1,1
+100,Phytoplankton colour,0,1,0
+101,Paralia sulcata,149055,3,0
+102,Skeletonema costatum,149074,3,0
+103,Thalassiosira spp.,148912,3,0
+104,Dactyliosolen antarcticus,179785,3,0
+107,Rhizosolenia styliformis,149629,3,0
+108,Rhizosolenia hebetata semispina,149071,3,0
+112,Chaetoceros(Hyalochaete) spp.,370366,3,0
+113,Chaetoceros(Phaeoceros) spp.,370367,3,0
+114,Odontella sinensis,149095,3,0
+116,Thalassiothrix longissima,157083,3,0
+117,Thalassionema nitzschioides,149093,3,0
+121,Ceratium fusus,109951,3,0
+122,Ceratium furca,109950,3,0
+123,Ceratium lineatum,109963,3,0
+124,Ceratium tripos,109982,3,0
+125,Ceratium macroceros,109967,3,0
+126,Ceratium horridum,109956,3,0
+127,Ceratium longipes,109964,3,0
+128,Ceratium arcticum,156509,3,0
+130,Dinoflagellate cysts (Total),19542,3,1
+131,Ceratium kofoidii,109961,3,0
+132,Pyrophacus spp.,109555,3,0
+133,Polykrikos schwartzii cysts,109901,3,0
+134,Dictyocysta spp.,196834,2,0
+135,Parafavella gigantea,196837,2,0
+148,Penilia avirostris,106272,2,0
+151,Actinoptychus spp.,148947,3,0
+152,Asteromphalus spp.,162254,3,0
+154,Bacteriastrum spp.,149118,3,0
+155,Bellerochea malleus,149306,3,0
+156,Biddulphia alternans,149655,3,0
+157,Odontella aurita,149050,3,0
+158,Odontella granulata,149156,3,0
+159,Odontella obtusa,162940,3,0
+160,Odontella regia,149094,3,0
+161,Odontella rhombus,149157,3,0
+162,Cerataulina pelagica,149619,3,0
+163,Climacodium frauenfeldianum,196804,3,0
+165,Coscinodiscus concinnus,148992,3,0
+166,Coscinodiscus spp. (Unidentified),148917,3,0
+167,Detonula confervacea,149286,3,0
+168,Ditylum brightwellii,149023,3,0
+169,Eucampia zodiacus,149131,3,0
+170,Fragilaria spp.,149028,3,0
+171,Guinardia flaccida,149132,3,0
+172,Gyrosigma spp.,149033,3,0
+173,Hemiaulus spp.,163248,3,0
+175,Leptocylindrus danicus,149106,3,0
+176,Navicula spp.,149142,3,0
+177,Cylindrotheca closterium,149004,3,0
+178,Rhaphoneis amphiceros,149066,3,0
+179,Planktoniella sol,196815,3,0
+180,Rhizosolenia acuminata,196805,3,0
+182,Rhizosolenia bergonii,196811,3,0
+187,Rhizosolenia setigera,149115,3,0
+190,Stephanopyxis spp.,149630,3,0
+192,Surirella spp.,149084,3,0
+194,Phaeocystis pouchetii,115106,3,0
+195,Coccolithaceae (Total),178597,3,1
+196,Pterosperma spp. (Total),160595,3,1
+197,Halosphaera spp.,134528,2,0
+198,Silicoflagellates,157256,3,0
+200,Odontella mobiliensis,164116,3,0
+201,Gossleriella tropica,196827,3,0
+203,Pachysphaera spp.,160594,3,0
+206,Hemidiscus cuneiformis,180367,3,0
+217,Ceratium falcatum,109949,3,0
+218,Ceratium geniculatum,109952,3,0
+219,Ceratium breve,109932,3,0
+220,Amphisolenia spp.,109459,3,0
+221,Ceratium arietinum,109929,3,0
+222,Ceratium azoricum,109930,3,0
+223,Ceratium belone,109931,3,0
+224,Ceratium bucephalum,841190,3,0
+225,Ceratium buceros,109934,3,0
+226,Ceratium candelabrum,109935,3,0
+227,Ceratium carriense,109936,3,0
+228,Ceratium compressum,109939,3,0
+229,Ceratium declinatum,109943,3,0
+230,Ceratium extensum,109947,3,0
+231,Ceratium gibberum,109953,3,0
+232,Ceratium hexacanthum,109955,3,0
+233,Ceratium inflatum,109958,3,0
+234,Ceratium karstenii,109960,3,0
+235,Ceratium lamellicorne,196824,3,0
+236,Ceratium lunula,196822,3,0
+237,Ceratium massiliense,109968,3,0
+238,Ceratium minutum,109969,3,0
+239,Ceratium pavillardii,109971,3,0
+240,Ceratium pentagonum,109972,3,0
+241,Ceratium petersii,196823,3,0
+242,Ceratium platycorne,196824,3,0
+243,Ceratium praelongum,109973,3,0
+244,Ceratium pulchellum,109974,3,0
+245,Ceratium setaceum,109977,3,0
+246,Ceratium teres,109980,3,0
+247,Ceratium trichoceros,109981,3,0
+248,Ceratium vultur,109983,3,0
+249,Ceratocorys spp.,109507,3,0
+250,Cladopyxis spp.,109509,3,0
+251,Dinophysis spp. Total,109462,3,1
+253,Gonyaulax spp.,109519,3,0
+254,Oxytoxum spp.,109528,3,0
+255,Protoperidinium spp.,109553,3,0
+256,Histioneis spp.,109463,3,0
+257,Podolampas spp.,109550,3,0
+258,Pronoctiluca pelagica,109903,3,0
+259,Prorocentrum spp. Total,109566,3,1
+260,Ceratium concilians,109940,3,0
+261,Ceratium contortum,109941,3,0
+262,Ceratium falcatiforme,109948,3,0
+263,Ceratium longirostrum,109965,3,0
+264,Ptychodiscus noctiluca,109888,3,0
+265,Centrodinium spp.,109526,3,0
+266,Cystodinium spp.,196830,3,0
+267,Ornithocercus spp.,109464,3,0
+268,Pyrocystis spp.,109571,3,0
+269,Ceratium ranipes,109975,3,0
+270,Favella serrata,196835,2,0
+271,Glenodinium spp.,109538,3,0
+275,Gymnodinium spp.,109475,3,0
+276,Katodinium spp.,109477,3,0
+300,Acartia danae,346026,2,0
+301,Acrocalanus spp.,104192,2,0
+302,Calocalanus spp.,104193,2,0
+303,Candacia I-IV,104157,2,0
+304,Ctenocalanus vanus,104510,2,0
+306,Harpacticoida Total Traverse,1102,2,1
+307,Euterpina acutifrons,116162,2,0
+309,Macrosetella gracilis,116382,2,0
+310,Miracia efferata,116383,1,0
+311,Lubbockia spp.,128672,2,0
+312,Lucicutia spp.,104183,2,0
+313,Mecynocera clausi,104616,2,0
+314,Metridia I-IV,104190,2,0
+315,Metridia Total traverse,104190,2,1
+316,Microcalanus spp.,104164,2,0
+317,Oncaea spp.,128690,2,0
+318,Parapontella brevicornis,104686,2,0
+320,Scaphocalanus echinatus,104793,1,0
+321,Scolecithricella spp.,104229,2,0
+322,Temora stylifera,104879,2,0
+323,Temora turbinata,104880,2,0
+324,Tortanus discaudatus,157684,2,0
+325,Urocorycaeus spp.,128639,1,0
+326,Copepod nauplii,1080,2,0
+327,Acartia longiremis,346037,2,0
+328,Acartia negligens,346030,2,0
+329,Diaixis hibernica,104521,2,0
+330,Diaixis pygmaea,104522,2,0
+347,Copepod eggs,1080,2,0
+348,Cephalobranchia spp.,416184,1,0
+350,Cirripede larvae (Total),1082,2,1
+351,Euphausiacea calyptopis,1128,2,0
+352,Euphausiacea nauplii,1128,2,0
+353,Euphausiacea eggs,1128,2,0
+354,Foraminifera (Total),1410,2,1
+355,Radiolaria Total,196831,2,1
+357,Zoothamnium pelagicum,196832,2,0
+358,Pneumodermopsis canephora,140824,1,0
+364,Heterorhabdus spinifer,104582,1,0
+369,Heterorhabdus spp. (Unidentified),104178,1,0
+370,Aetideus armatus,104275,1,0
+371,Amallothrix spp.,104221,1,0
+372,Anomalocera patersoni,104722,1,0
+373,Candacia bipinnata,104475,1,0
+374,Candacia curta,104476,1,0
+375,Candacia ethiopica,104478,1,0
+376,Candacia longimana,104481,1,0
+377,Candacia norvegica,104482,1,0
+378,Candacia pachydactyla,104483,1,0
+379,Candacia tenuimana,104485,1,0
+380,Centropages bradyi,104491,1,0
+381,Centropages chierchiae eyecount,104494,1,0
+382,Centropages violaceus,104500,1,0
+383,Copilia spp.,128721,1,0
+386,Eucalanus hyalinus,345781,1,0
+393,Euchaeta marina,104552,1,0
+394,Euchaeta media,104553,1,0
+395,Euchaeta pubera,104554,1,0
+396,Euchaeta spinosa,104555,1,0
+398,Euchirella amoena,104296,1,0
+400,Euchirella curticauda,104299,1,0
+401,Euchirella messinensis,104301,1,0
+402,Euchirella pulchra,104302,1,0
+403,Gaetanus minor,104312,1,0
+404,Haloptilus longicornis,104431,1,0
+405,Haloptilus spiniceps,104437,1,0
+406,Heterorhabdus abyssalis,104576,1,0
+407,Heterorhabdus norvegicus,104579,1,0
+408,Heterorhabdus papilliger,104580,1,0
+409,Paracandacia bispinosa,220915,1,0
+410,Phaenna spinifera,104698,1,0
+411,Pleuromamma piseki,104640,1,0
+412,Pleuromamma xiphias,104643,1,0
+413,Rhincalanus cornutus,104542,1,0
+414,Sapphirina spp.,128722,1,0
+415,Scolecithrix bradyi,104820,1,0
+416,Scolecithrix danae,104821,1,0
+417,Scottocalanus persecans,104832,1,0
+418,Undeuchaeta major,104342,1,0
+419,Undeuchaeta plumosa,104343,1,0
+421,Undinula vulgaris,104473,1,0
+422,Xanthocalanus spp. (Unidentified),104204,1,0
+423,Neocalanus robustior,104472,1,0
+424,Paracandacia simplex,220914,1,0
+425,Scaphocalanus spp. (Unidentified),104228,1,0
+427,Paracandacia spp. (Unidentified),104157,1,0
+428,Euchirella spp. (Unidentified),104120,1,0
+429,Candacia spp. (Unidentified),104157,1,0
+430,Candacia varicans,104486,1,0
+431,Centropages spp. (Unidentified),104159,2,0
+432,Heterostylites longicornis,104586,1,0
+433,Lophothrix spp.,104225,1,0
+434,Pleuromamma spp. (Unidentified),104191,1,0
+435,Undeuchaeta spp. (Unidentified),104128,1,0
+440,Labidocera aestiva,104728,1,0
+448,Paedoclione doliiformis,160435,1,0
+449,Pycnogonida,1302,1,0
+450,Polychaete larvae (unidentified),883,1,0
+452,Siphonophora,1371,1,0
+454,Cumacea,1137,1,0
+455,Sergestidae,106731,1,0
+456,Isopoda (Total),1131,1,1
+457,Lepas nauplii,106087,1,0
+458,Mysidacea,149668,1,0
+459,Ostracoda,1078,1,0
+460,Echinoderm post larvae,1806,1,0
+461,Cavolinia spp.,137750,1,0
+462,Creseis spp.,137752,1,0
+463,Diacria spp.,137755,1,0
+464,Clio spp.,137751,1,0
+465,Pneumodermopsis ciliata,140825,1,0
+466,Pterotrachea spp.,138009,1,0
+467,Parasitic Nematoda,799,1,0
+468,Parasites of the plankton,0,1,0
+469,Thaliacea,22626,1,0
+470,Atlanta spp.,137687,1,0
+471,Cephalopoda larvae,11707,1,0
+472,Firoloida spp.,138008,1,0
+473,Notobranchaea spp.,138257,1,0
+474,Pneumodermopsis paucidens,140826,1,0
+475,Carinaria spp.,137746,1,0
+476,Cuvierina spp.,137753,1,0
+477,Oxygyrus spp.,137688,1,0
+478,Pneumoderma spp.,138365,1,0
+480,Gymnosomata (Unidentified),164,1,0
+488,Peraclis spp.,138327,1,0
+509,Stomatopoda,14355,1,0
+510,Branchiostoma lanceolatum,104906,1,0
+575,Scottocalanus securifrons,104833,1,0
+597,Heterorhabdus clausi,104577,1,0
+601,Haloptilus acutifrons,104422,1,0
+604,Augaptilus spp.,104137,1,0
+626,Amphipoda (Unidentified),1135,1,0
+634,Ptychocylis spp.,196838,2,0
+750,Noctiluca scintillans,109921,3,0
+801,Calanopia elliptica,104724,2,0
+805,Tintinnopsis spp.,163780,2,0
+806,Hexasterias problematica,172815,3,0
+807,Pacillina arctica incertae sedis,196768,2,0
+812,Pinus pollen,0,3,0
+813,Spiny egg (Candacia egg),104157,2,0
+814,Stellate body (Land plant hair),0,3,0
+815,Euchaeta paraconcinna,196780,1,0
+816,Pontellina securifer,196786,1,0
+817,Anomoeoneis spp.,149411,3,0
+818,Phalacroma spp.,109466,3,0
+819,Candacia giesbrechti,104479,1,0
+946,Rotifer eggs,14260,2,0
+947,Diploneis spp.,149018,3,0
+948,Biddulphia biddulphiana,162952,3,0
+949,Melosira varians,149043,3,0
+950,Scrippsiella spp.,109545,3,0
+951,Spindelei,119723,2,0
+953,Corythodinium spp.,109527,3,0
+954,Campylosira cymbelliformis,149357,3,0
+955,Pseudochirella spp.,104126,1,0
+956,Blepharocysta paulsenii,110178,3,0
+957,Melosira lineata,156636,3,0
+958,Melosira arctica,160537,3,0
+960,Amphidoma caudata,110005,3,0
+961,Labidocera acutifrons,104727,1,0
+962,Eucampia groenlandica,157430,3,0
+963,Oculosetella gracilis,116384,1,0
+964,Actinocyclus octonarius ralfsi,149654,3,0
+971,Triceratium favus,149170,3,0
+972,Centropages chierchiae traverse,104494,2,0
+973,Monstrilla longiremis,119805,2,0
+974,Fusopsis incertae sedis,178847,2,0
+975,Nitzschia sigma rigida,196817,3,0
+976,Coscinodiscus wailesii,156632,3,0
+977,Salpidae (Total),137217,1,0
+978,Doliolidae,137215,1,0
+979,Amphiprora hyperborea,179174,3,0
+980,Actiniscus pentasterias,109717,3,0
+981,Nitzschia longissima,149150,3,0
+982,Aulacodiscus argus,149280,3,0
+984,Gyrodinium spp.,109476,3,0
+985,Alteutha spp.,115427,1,0
+987,Calanopia americana,104723,2,0
+988,Pontellopsis regalis,104745,1,0
+990,Acartia amboinensis,346049,2,0
+991,Calanopia spp. (Unidentified),104207,1,0
+992,Centropages calaninus,104492,2,0
+993,Centropages gracilis,220903,2,0
+996,Calanopia minor,220919,2,0
+997,Corycaeus speciosus,128800,1,0
+999,Lucifer spp.,106827,1,0
+1000,Proboscia alata,149168,3,0
+1001,Leptocylindrus mediterraneus,149230,3,0
+1002,Proboscia inermis,341501,3,0
+1543,Echinospira larvae,558776,2,0
+1546,Rhabdonema spp.,157072,3,0
+1547,Chaetoceros spp.,148985,3,0
+1549,Acartia tonsa,345943,2,0
+1550,Acartia tumida,346025,1,0
+1551,Centropages abdominalis,196774,2,0
+1552,Neocalanus plumchrus II,196772,2,0
+1553,Neocalanus plumchrus I-IV,196772,2,0
+1554,Neocalanus plumchrus total traverse,196772,2,1
+1555,Calanus marshallae V-VI,196770,1,0
+1556,Calanus pacificus V-VI,196771,1,0
+1557,Epilabidocera amphitrites,254330,1,0
+1558,Eucalanus bungii,254427,1,0
+1559,Metridia pacifica,196784,1,0
+1560,Metridia okhotensis,196783,1,0
+1561,Neocalanus plumchrus III,196772,1,0
+1562,Neocalanus plumchrus IV,196772,1,0
+1563,Neocalanus plumchrus V,196772,1,0
+1564,Neocalanus plumchrus VI (f),196772,1,0
+1566,Neocalanus flemingeri V-VI,353708,1,0
+1567,Neocalanus cristatus V-VI,104470,1,0
+1568,Neodenticula seminae,196813,3,0
+1569,Paraeuchaeta elongata,196779,1,0
+1570,Neocalanus spp. (unidentified),104155,1,0
+1571,Candacia columbiae,349800,1,0
+1572,Heterorhabdus tanneri,196782,1,0
+1573,Neocalanus cristatus I-IV,104470,1,0
+1574,Paraeuchaeta spp.,196874,1,0
+1575,Parahistioneis spp.,109463,3,0
+1576,Scolecithrix spp. (Unidentified),104230,1,0
+1577,Mollusca (Unidentified),51,1,0
+1579,Ceratium symmetricum,109979,3,0
+1580,Temora discaudata,220898,2,0
+1581,Neocalanus plumchrus V (small),196772,1,0
+1582,Undeuchaeta intermedia,196795,1,0
+1584,Euchirella pseudopulchra,196792,1,0
+1585,Rhizosolenia hebetata hiemalis,149070,3,0
+1588,Thecosomata (Pacific),13703,2,0
+1589,Hemicyclops aberdonensis,413311,2,0
+1590,Lithodesmium undulatum,149322,3,0
+1591,Ceratium limulus,109962,3,0
+1592,Lepas cypris,106087,1,0
+1593,Pontellidae (Unidentified),104097,1,0
+1595,Pontella pulvinata,196793,1,0
+1596,Rhizosolenia pungens,149117,3,0
+1597,Thliptodon spp.,137797,1,0
+1599,Heterophryxus appendiculatus,260629,1,0
+1600,Calanus spp. V-VI (Pacific unidentified),104152,1,0
+1601,Dinophysis acuminata,109603,3,0
+1602,Dinophysis acuta,109604,3,0
+1603,Dinophysis caudata,109612,3,0
+1604,Dinophysis norvegica,109637,3,0
+1606,Dinophysis sacculus,232261,3,0
+1607,Dinophysis tripos,109662,3,0
+1608,Acantharia spp,235747,2,0
+1609,Radiolaria non-Acantharian,196831,2,0
+1610,Plastic,0,1,0
+1611,Pseudolubbockia dilatata,128895,1,0
+1612,Hyalochaete resting spore,370366,3,0
+1614,Clione pacific/Thliptodon,166,1,0
+1615,Epilabidocera spp,254329,1,0
+1616,Dinophysis fortii,109624,3,0
+1617,Bacterosira bathyomphala,162927,3,0
+1618,Pipefish,127379,1,0
+1620,Eurytemora pacifica,232028,2,0
+1621,Fragilariopsis spp,149313,3,0
+1622,Heterorhabdus oikoumenikis,346540,1,0
+1623,Small Centric Diatoms (Unidentified),148900,3,0
+1624,Grammatophora spp.,149335,3,0
+1625,Giardella thompsoni,128776,2,0
+1626,Giardella callianassae,128775,2,0
+1627,Nitzschia bicapitata,341566,3,0
+1628,Paracalanus spp.,104196,2,0
+1629,Microsetella spp.,115341,2,0
+1630,Banquisia belgicae,341541,3,0
+1631,Chaetoceros dichaeta,178215,3,0
+1632,Dactyliosolen spp.,149309,3,0
+1633,Eucampia antarctica,341381,3,0
+1634,Eucampia spp.,149130,3,0
+1635,Fragilariopsis kerguelensis,341555,3,0
+1636,Rhizosolenia chunii,341502,3,0
+1637,Rhizosolenia simplex,341506,3,0
+1639,Rhizosolenia spp.,149069,3,0
+1640,Thalassiothrix antarctica,341540,3,0
+1641,Dinophysis antarctica,341579,3,0
+1642,Dinophysis punctata,109651,3,0
+1643,Dinophysis rudgei,232257,3,0
+1644,Ctenocalanus spp. (Unidentified),104162,2,0
+1645,Drepanopus forcipatus I-V,342452,2,0
+1646,Drepanopus forcipatus VI Female,342452,2,0
+1647,Drepanopus forcipatus VI Male,342452,2,0
+1648,Small Calanoid copepod (Unidentified),1100,2,0
+1654,Thecosomata (Antarctic),13703,2,0
+1655,Calanoides acutus (unstaged),342434,1,0
+1656,Calanus propinquus (unstaged),342435,1,0
+1657,Calanus propinquus V,342435,1,0
+1658,Calanus simillimus (unstaged),342436,1,0
+1659,Calanus simillimus IV,342436,1,0
+1660,Calanus simillimus V,342436,1,0
+1661,Calanus simillimus VI (female),342436,1,0
+1662,Calanus simillimus VI (male),342436,1,0
+1663,Metridia gerlachei,344689,1,0
+1664,Neocalanus tonsus (unstaged),344701,1,0
+1665,Neocalanus tonsus IV,344701,1,0
+1667,Paraeuchaeta antarctica IV,344974,1,0
+1668,Paraeuchaeta antarctica V,344974,1,0
+1669,Rhincalanus gigas (unstaged),220837,1,0
+1670,Rhincalanus gigas III,220837,1,0
+1671,Rhincalanus gigas IV,220837,1,0
+1672,Rhincalanus gigas V,220837,1,0
+1673,Rhincalanus gigas VI (female),220837,1,0
+1674,Rhincalanus gigas VI (male),220837,1,0
+1675,Subeucalanus longiceps,345366,1,0
+1677,Metridia spp. (V-VI) (unidentified),104190,1,0
+1678,Brachiopod larvae,1803,1,0
+1679,Prorocentrum micans,110303,3,0
+1680,Prorocentrum rostratum,110311,3,0
+1681,Prorocentrum dentatum,110298,3,0
+1682,Striatella spp.,149176,3,0
+1683,Gaetanus pungens,342623,1,0
+1684,Gaetanus simplex,358653,1,0
+1686,Rhizosolenia polydactyla,341397,3,0
+1687,Cyclopinoides longicornis,357973,2,0
+1688,Acartia spp. - Antarctic,104108,2,0
+1689,Alexandrium spp.,109470,3,0
+1690,Meringosphaera spp.,115075,3,0
+1691,Dactyliosolen tenuijunctus,341499,3,0
+1693,Chaetoceros bulbosus,341472,3,0
+1694,Calanoides acutus IV,342434,1,0
+1695,Calanoides acutus V,342434,1,0
+1696,Calanus propinquus III,342436,1,0
+1697,Neocalanus tonsus V,344701,1,0
+1698,Neocalanus tonsus VI (female),344701,1,0
+1699,Neocalanus tonsus VI (male),344701,1,0
+1700,Rhincalanus gigas I,220837,1,0
+1701,Rhincalanus gigas II,220837,1,0
+1702,Clione spp. (Antarctic),137793,1,0
+5500,Ammodytidae,125516,1,0
+10031,Appendicularia,17446,2,0
+10066,Siphonostomatoida,1104,1,0
+10069,Monstrilloida,1106,1,0
+10375,Phalacroma rotundatum,162793,3,0
+10532,Nematocysts (+),1267,2,0
+10587,Clytemnestridae,115145,2,0
+10588,Mesocalanus tenuicornis,104468,1,0
+10589,Cnidaria tissue,1267,1,0
+10590,Bivalvia larvae,105,2,0
+10593,Caprelloidea,196121,1,0
+10594,Aetideus giesbrechti,104276,1,0
+10595,Aetideus spp. (Unidentified),104112,1,0
+10596,Subeucalanus crassus,104544,1,0
+10598,Subeucalanus monachus,104545,1,0
+10599,Subeucalanus mucronatus,104546,1,0
+10600,Subeucalanus pileatus,104547,1,0
+10601,Eucalanidae (unidentified),104085,1,0
+10602,Paraeuchaeta glacialis,104560,1,0
+10603,Paraeuchaeta gracilis,104561,1,0
+10604,Paraeuchaeta hebes,104563,1,0
+10605,Paraeuchaeta norvegica,104566,1,0
+10606,Euchaetidae (unidentified),104086,1,0
+10607,Paraeuchaeta tonsa,359879,1,0
+10608,Gaetanus spp. (unidentified),104121,1,0
+10609,Gaetanus tenuispinus,237965,1,0
+10610,Parathalestris croni,116598,1,0
+10612,Bradyidius armatus,146735,1,0
+10615,Asterionellopsis glacialis,149139,3,0
+10616,Asterionellopsis kariana,149618,3,0
+10617,Bleakeleya notata,163736,3,0
+10618,Odontella longicruris,418591,3,0
+10619,Odontella weissflogii,341487,3,0
+10620,Prorocentrum spp. ('Exuviaella' type),109566,3,0
+10622,Ephemera planamembranacea,341542,3,0
+10623,Pseudo-nitzschia delicatissima complex,149153,3,0
+10624,Pseudo-nitzschia seriata complex,149152,3,0
+10625,Trichodesmium spp.,177604,3,0
+10626,Podosira stelligera,149060,3,0
+10628,Fragilariopsis doliolus,366281,3,0
+10629,Pseudosolenia calcar-avis,163344,3,0
+10630,Guinardia cylindrus,163241,3,0
+10631,Guinardia delicatula,149112,3,0
+10632,Dactyliosolen fragilissimus,149310,3,0
+10633,Neocalyptrella robusta,345491,3,0
+10634,Guinardia striata,149113,3,0
+10635,Proboscia truncata,248181,3,0
+10636,Detonula pumila,149647,3,0
+10637,Meuniera membranacea,149145,3,0
+10641,Lauderia annulata,149135,3,0
