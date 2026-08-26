@@ -3,7 +3,7 @@ library(tidyverse)
 library(patchwork)
 
 # Read the summary data
-zoo_data <- read_csv("zooplankton_annual_summary_all.csv") %>%
+zoo_data <- read_csv("Data/zooplankton_annual_summary_all.csv") %>%
   filter(Year >= 1950, Year <= 2100) %>%
   filter(Scenario %in% c("historical",
                          "ssp119",
@@ -162,7 +162,7 @@ for (var in variables) {
 for (var in variables) {
   n_models <- individual_plots[[paste0(var, "_n")]]
   print(individual_plots[[var]])
-  ggsave(paste0("zooplankton_individual_models_", var, ".png"),
+  ggsave(file.path("Figures", paste0("zooplankton_individual_models_", var, ".png")),
          individual_plots[[var]],
          width = 12, height = 3 * ceiling(n_models / 3), dpi = 300)
 }
@@ -224,5 +224,5 @@ combined_plot <- p_zooc / p_zmicro / p_zmeso +
 print(combined_plot)
 
 # Save the plot
-ggsave("zooplankton_temporal_change.png", combined_plot,
+ggsave(file.path("Figures", "zooplankton_temporal_change.png"), combined_plot,
        width = 10, height = 12, dpi = 300)

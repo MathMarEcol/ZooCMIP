@@ -17,6 +17,8 @@
 # Load required libraries
 library(tidyverse)
 library(ncdf4)
+library(terra)
+library(Hmisc)
 
 # Define variables and their directories
 variables <- tibble(
@@ -39,130 +41,168 @@ parse_filename <- function(filepath) {
   )
 }
 
-# # Function to calculate statistics from NetCDF file
-# calculate_stats <- function(filepath, var_name) {
+# Function to calculate area-weighted statistics from NetCDF file.
 #
-#   # Open NetCDF file
-#   nc <- nc_open(filepath)
+# All statistics are weighted by cell area (m²) computed via terra::cellSize().
+# On a regular 0.5° lat/lon grid, cell area scales as cos(latitude), so
+# unweighted statistics would over-represent high-latitude (smaller) cells.
 #
-#   # Read the data (dimensions typically: lon, lat, depth, time)
-#   data <- ncvar_get(nc, var_name)
+# SE is intentionally omitted: gridded model output is spatially autocorrelated,
+# so the pixel count is not a valid effective sample size for SE estimation.
 #
-#   # Get time variable and convert to years
-#   time_var <- ncvar_get(nc, "time")
-#   time_units <- ncatt_get(nc, "time", "units")$value
-#
-#   # Parse time units to get years
-#   # Assuming format like "days since YYYY-MM-DD"
-#   base_date <- str_extract(time_units, "\\d{4}-\\d{2}-\\d{2}")
-#   base_year <- as.numeric(str_sub(base_date, 1, 4))
-#
-#   # Convert time to years
-#   if (str_detect(time_units, "days since")) {
-#     years <- base_year + floor(time_var / 365.25)
-#   } else if (str_detect(time_units, "years since")) {
-#     years <- base_year + floor(time_var)
-#   } else {
-#     # Fallback: assume annual data in sequence
-#     years <- base_year + seq(0, length(time_var) - 1)
-#   }
-#
-#   # Close NetCDF file
-#   nc_close(nc)
-#
-#   # Extract surface layer (first depth level)
-#   # Handle different dimension orders
-#   dims <- dim(data)
-#   n_dims <- length(dims)
-#
-#   if (n_dims == 4) {
-#     # Assume order: lon, lat, depth, time
-#     # Extract first depth level
-#     surface_data <- data[, , 1, ]
-#   } else if (n_dims == 3) {
-#     # Could be lon, lat, time (no depth) or lon, lat, depth
-#     # Check if last dimension matches time length
-#     if (dims[3] == length(years)) {
-#       surface_data <- data  # Already surface-only or no depth dimension
-#     } else {
-#       # Assume lon, lat, depth - take first depth
-#       surface_data <- data[, , 1]
-#       # Add time dimension
-#       surface_data <- array(surface_data, dim = c(dim(surface_data), 1))
-#     }
-#   } else {
-#     stop("Unexpected number of dimensions in NetCDF file")
-#   }
-#
-#   # Calculate statistics for each year
-#   stats_list <- map_dfr(seq_along(years), function(i) {
-#     # Extract data for this year
-#     if (length(dim(surface_data)) == 3) {
-#       year_data <- surface_data[, , i]
-#     } else {
-#       year_data <- surface_data
-#     }
-#
-#     # Flatten and remove NAs
-#     values <- as.vector(year_data)
-#     valid_values <- values[!is.na(values)]
-#
-#     # Calculate statistics
-#     if (length(valid_values) > 0) {
-#       tibble(
-#         Year = years[i],
-#         Mean = mean(valid_values, na.rm = TRUE),
-#         Median = median(valid_values, na.rm = TRUE),
-#         SD = sd(valid_values, na.rm = TRUE),
-#         SE = sd(valid_values, na.rm = TRUE) / sqrt(length(valid_values))
-#       )
-#     } else {
-#       tibble(
-#         Year = years[i],
-#         Mean = NA_real_,
-#         Median = NA_real_,
-#         SD = NA_real_,
-#         SE = NA_real_
-#       )
-#     }
-#   })
-#
-#   return(stats_list)
-# }
-#
-# # Process all variables
-# zoo_summary <- variables %>%
-#   pmap_dfr(function(var_name, data_dir) {
-#
-#     # List all NetCDF files for this variable (exclude hidden files starting with ._)
-#     nc_files <- list.files(data_dir, pattern = paste0("^", var_name, "_.*\\.nc$"), full.names = TRUE)
-#
-#     # Process all files for this variable
-#     nc_files %>%
-#       map_dfr(function(filepath) {
-#         # Parse filename to get metadata
-#         metadata <- parse_filename(filepath)
-#
-#         # Calculate statistics
-#         stats <- calculate_stats(filepath, var_name)
-#
-#         # Combine metadata with statistics
-#         metadata %>%
-#           crossing(stats) %>%
-#           select(Variable, Model, Scenario, Variant, Year, Mean, Median, SD, SE)
-#       })
-#   })
-#
-# # Display summary
-# print(zoo_summary)
-# # Optionally save the results
-# write_csv(zoo_summary, "zooplankton_annual_summary_all.csv")
+# Weighted median uses Hmisc::wtd.quantile().
+calculate_stats <- function(filepath, var_name) {
+
+  # Open NetCDF file
+  nc <- nc_open(filepath)
+
+  # Read the data (dimensions typically: lon, lat, depth, time)
+  data <- ncvar_get(nc, var_name)
+
+  # Get time variable and convert to years
+  time_var <- ncvar_get(nc, "time")
+  time_units <- ncatt_get(nc, "time", "units")$value
+
+  # Get lon and lat for georeferencing
+  lon <- ncvar_get(nc, "lon")
+  lat <- ncvar_get(nc, "lat")
+
+  # Close NetCDF file
+  nc_close(nc)
+
+  # Parse time units to get years
+  # Assuming format like "days since YYYY-MM-DD"
+  base_date <- str_extract(time_units, "\\d{4}-\\d{2}-\\d{2}")
+  base_year <- as.numeric(str_sub(base_date, 1, 4))
+
+  # Convert time to years
+  if (str_detect(time_units, "days since")) {
+    years <- base_year + floor(time_var / 365.25)
+  } else if (str_detect(time_units, "years since")) {
+    years <- base_year + floor(time_var)
+  } else {
+    # Fallback: assume annual data in sequence
+    years <- base_year + seq(0, length(time_var) - 1)
+  }
+
+  # Extract surface layer (first depth level)
+  # Handle different dimension orders
+  dims <- dim(data)
+  n_dims <- length(dims)
+
+  if (n_dims == 4) {
+    # Assume order: lon, lat, depth, time — extract first depth level
+    surface_data <- data[, , 1, ]
+  } else if (n_dims == 3) {
+    # Could be lon, lat, time (no depth) or lon, lat, depth
+    # Check if last dimension matches time length
+    if (dims[3] == length(years)) {
+      surface_data <- data  # Already surface-only or no depth dimension
+    } else {
+      # Assume lon, lat, depth — take first depth and treat as single time step
+      surface_data <- array(data[, , 1], dim = c(dims[1], dims[2], 1))
+      years <- years[1]
+    }
+  } else {
+    stop("Unexpected number of dimensions in NetCDF file")
+  }
+
+  # Build a template raster from the first time step to derive cell areas.
+  # terra::cellSize() returns exact areas in m² for each cell, correctly
+  # accounting for the cos(lat) scaling on a geographic (EPSG:4326) grid.
+  # Note: ncdf4 returns data as (lon, lat), so we transpose to (lat, lon)
+  # for terra, then flip vertically to restore N→S row order.
+  template_rast <- rast(
+    t(surface_data[, , 1]),
+    extent = c(min(lon), max(lon), min(lat), max(lat)),
+    crs = "EPSG:4326"
+  )
+  template_rast <- flip(template_rast, direction = "vertical")
+  cell_areas <- cellSize(template_rast, unit = "m")
+
+  # Calculate area-weighted statistics for each year
+  map_dfr(seq_along(years), function(i) {
+
+    # Build a georeferenced raster for this year's surface slice
+    year_rast <- rast(
+      t(surface_data[, , i]),
+      extent = c(min(lon), max(lon), min(lat), max(lat)),
+      crs = "EPSG:4326"
+    )
+    year_rast <- flip(year_rast, direction = "vertical")
+
+    # Extract values and corresponding cell areas as vectors
+    values  <- values(year_rast)[, 1]
+    weights <- values(cell_areas)[, 1]
+
+    # Restrict to cells where both value and area are non-NA
+    valid   <- !is.na(values) & !is.na(weights)
+    v <- values[valid]
+    w <- weights[valid]
+
+    if (length(v) == 0) {
+      return(tibble(
+        Year   = years[i],
+        Mean   = NA_real_,
+        Median = NA_real_,
+        SD     = NA_real_
+      ))
+    }
+
+    # Area-weighted mean
+    w_mean <- sum(v * w) / sum(w)
+
+    # Area-weighted median via Hmisc::wtd.quantile()
+    w_median <- as.numeric(wtd.quantile(v, weights = w, probs = 0.5))
+
+    # Area-weighted standard deviation
+    w_sd <- sqrt(sum(w * (v - w_mean)^2) / sum(w))
+
+    tibble(
+      Year   = years[i],
+      Mean   = w_mean,
+      Median = w_median,
+      SD     = w_sd
+    )
+  })
+}
+
+# Process all variables
+zoo_summary <- variables %>%
+  pmap_dfr(function(var_name, data_dir) {
+
+    # List all NetCDF files for this variable (exclude hidden files starting with ._)
+    nc_files <- list.files(data_dir, pattern = paste0("^", var_name, "_.*\\.nc$"), full.names = TRUE)
+
+    # Process all files for this variable
+    map_dfr(nc_files, function(filepath) {
+      # Parse filename to get metadata
+      metadata <- parse_filename(filepath)
+
+      # Calculate area-weighted statistics
+      stats <- calculate_stats(filepath, var_name)
+
+      # Attach metadata columns to each year's row (not a Cartesian product)
+      stats %>%
+        mutate(
+          Variable = metadata$Variable,
+          Model    = metadata$Model,
+          Scenario = metadata$Scenario,
+          Variant  = metadata$Variant,
+          .before  = Year
+        )
+    })
+  })
+
+# Display summary
+print(zoo_summary)
+
+# Save results
+write_csv(zoo_summary, "Data/zooplankton_annual_summary_all.csv")
 
 # ============================================================================
 # SPATIAL SUMMARY: Calculate % biomass change between time periods
 # ============================================================================
-
-library(terra)
 
 # Create output directory for spatial tifs
 spatial_output_dir <- "Data/spatial_change_maps"
@@ -170,7 +210,12 @@ if (!dir.exists(spatial_output_dir)) {
   dir.create(spatial_output_dir, recursive = TRUE)
 }
 
-# Function to extract spatial mean for a time period from NetCDF
+# Function to extract the per-pixel temporal mean for a given time period from
+# a NetCDF file, returned as a georeferenced terra SpatRaster.
+#
+# The mean is computed across the time dimension only (not spatially collapsed),
+# so the output retains the full spatial grid. Area weighting is not applied
+# here because the % change is computed pixel-by-pixel in process_spatial_change.
 extract_spatial_mean <- function(filepath, var_name, start_year, end_year) {
 
   # Open NetCDF file
@@ -180,8 +225,15 @@ extract_spatial_mean <- function(filepath, var_name, start_year, end_year) {
   data <- ncvar_get(nc, var_name)
 
   # Get time variable and convert to years
-  time_var <- ncvar_get(nc, "time")
+  time_var   <- ncvar_get(nc, "time")
   time_units <- ncatt_get(nc, "time", "units")$value
+
+  # Get lon and lat for georeferencing
+  lon <- ncvar_get(nc, "lon")
+  lat <- ncvar_get(nc, "lat")
+
+  # Close NetCDF file
+  nc_close(nc)
 
   # Parse time units to get years
   base_date <- str_extract(time_units, "\\d{4}-\\d{2}-\\d{2}")
@@ -196,54 +248,45 @@ extract_spatial_mean <- function(filepath, var_name, start_year, end_year) {
     years <- base_year + seq(0, length(time_var) - 1)
   }
 
-  # Get lon and lat for georeferencing
-  lon <- ncvar_get(nc, "lon")
-  lat <- ncvar_get(nc, "lat")
-
-  # Close NetCDF file
-  nc_close(nc)
-
-  # Extract surface layer
-  dims <- dim(data)
+  # Extract surface layer (first depth level if depth dimension present)
+  dims   <- dim(data)
   n_dims <- length(dims)
 
   if (n_dims == 4) {
-    # Assume order: lon, lat, depth, time - extract first depth level
+    # Order: lon, lat, depth, time — extract first depth level
     surface_data <- data[, , 1, ]
   } else if (n_dims == 3) {
     if (dims[3] == length(years)) {
-      surface_data <- data  # Already surface-only
+      surface_data <- data  # Already surface-only: lon, lat, time
     } else {
-      surface_data <- data[, , 1]
-      surface_data <- array(surface_data, dim = c(dim(surface_data), length(years)))
+      # lon, lat, depth with a single time step — take first depth level
+      surface_data <- array(data[, , 1], dim = c(dims[1], dims[2], 1))
+      years <- years[1]
     }
   } else {
     stop("Unexpected number of dimensions in NetCDF file")
   }
 
-  # Find indices for the time period
+  # Find indices for the requested time period
   time_indices <- which(years >= start_year & years <= end_year)
 
   if (length(time_indices) == 0) {
     return(NULL)  # No data for this time period
   }
 
-  # Calculate mean across the time period
-  if (length(dim(surface_data)) == 3) {
-    period_mean <- apply(surface_data[, , time_indices, drop = FALSE], c(1, 2), mean, na.rm = TRUE)
-  } else {
-    period_mean <- surface_data
-  }
+  # Build a multi-layer SpatRaster for the time period (one layer per year).
+  # ncdf4 returns data as (lon, lat), so we transpose each slice to (lat, lon)
+  # for terra, then flip vertically to restore N→S row order.
+  period_stack <- map(time_indices, function(i) {
+    rast(
+      t(surface_data[, , i]),
+      extent = c(min(lon), max(lon), min(lat), max(lat)),
+      crs = "EPSG:4326"
+    ) |> flip(direction = "vertical")
+  }) |> rast()
 
-  # Create terra raster
-  # Note: terra expects data in (row, col) = (lat, lon) order, transposed from our (lon, lat)
-  rast_data <- rast(t(period_mean), extent = c(min(lon), max(lon), min(lat), max(lat)),
-                    crs = "EPSG:4326")
-  
-  # Flip vertically to correct latitude orientation
-  rast_data <- flip(rast_data, direction = "vertical")
-  
-  return(rast_data)
+  # Return the pixel-wise mean across the time period
+  mean(period_stack, na.rm = TRUE)
 }
 
 # Function to process a model/variant combination and calculate % change
