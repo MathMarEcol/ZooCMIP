@@ -1,3 +1,26 @@
+# TYLER: I just had a quick look at some output I had handy and noticed that under 
+# SSP585 I find Phytoplankton biomass goes way up (relative to other models) in CanOE, 
+# but zooplankton biomass actually stays fairly constant. This decoupling is unique to 
+# CanOE because their zooplankton have temperature dependent mortality but NOT 
+# temperature dependent grazing. So their is big T-driven top-down decline in grazing 
+# pressure the facilitates phytoplankton gains, which I find quite interesting (and 
+# probably wrong).
+# I was curious why ‘you' are finding zooplankton biomass goes up in the same SSP585 
+# run of CanOE though?? I quickly plotted the global distribution of the % change 
+# over the 21st century and it is pretty comparable to mine - so something appears 
+# different in the integration. see below
+# Is it possible that “you" are computing the percent change in each grid cell then 
+# averaging them without area or biomass weighting? Noting all the large increasing 
+# occur in the smallest high lattude grid cells. To be safe, order of operations wise, 
+# id globally integrate depth integrated zooplankton biomass (multiplying by each grid 
+# cells explicit volume) then compute the percent change directly on that globally 
+# integrated timeseries.
+# As far as model selections, CanESM5 and CanSEM5-CanOE use the same ocean model but 
+# different BGC models. CanOE is more complex with 2P2Z. I dont see a strong reason to 
+# exclude either (I find it informative to include the outliers/wonky ones), but if CMOC 
+# doesn't have all the sceanrio’s you need thats reasonable grounds to discard it.
+
+
 # PROMPT: You are a marine climate scientist and expert R programmer. Together we are
 # going to write some code to summarise some ESM zooplankton biomass data I have
 # downloaded and processed to the same grid and time interval. There are 3
@@ -23,9 +46,9 @@ library(Hmisc)
 # Define variables and their directories
 variables <- tibble(
   var_name = c("zooc", "zmicro", "zmeso"),
-  data_dir = c("/Volumes/T9/zooc/regridded",
-               "/Volumes/T9/zmicro/regridded",
-               "/Volumes/T9/zmeso/regridded")
+  data_dir = c("/Volumes/T9/ClimateData/zooc/regridded",
+               "/Volumes/T9/ClimateData/zmicro/regridded",
+               "/Volumes/T9/ClimateData/zmeso/regridded")
 )
 
 # Function to parse filename and extract metadata
@@ -378,5 +401,76 @@ write_csv(spatial_summary, file.path(spatial_output_dir, "spatial_processing_sum
 
 message(paste("Spatial change maps saved to:", spatial_output_dir))
 
+# ============================================================================
+# DIMENSIONALITY CHECK: Inspect one file per model per variable to confirm
+# depth handling — models may differ in their vertical grid conventions.
+# ============================================================================
 
+inspect_nc_dims <- function(var_name, data_dir) {
+
+  # List all NetCDF files for this variable
+  nc_files <- list.files(data_dir, pattern = paste0("^", var_name, "_.*\\.nc$"),
+                         full.names = TRUE)
+
+  if (length(nc_files) == 0) {
+    message("No files found for variable: ", var_name)
+    return(NULL)
+  }
+
+  # Parse filenames and select one file per model (first file found per model)
+  file_meta <- tibble(filepath = nc_files) %>%
+    mutate(meta = map(filepath, parse_filename)) %>%
+    unnest(meta) %>%
+    group_by(Model) %>%
+    slice(1) %>%
+    ungroup()
+
+  # Inspect each model's representative file
+  map_dfr(seq_len(nrow(file_meta)), function(i) {
+
+    filepath <- file_meta$filepath[i]
+    model    <- file_meta$Model[i]
+
+    nc <- nc_open(filepath)
+
+    # Dimension order and sizes for the target variable
+    var_dims   <- nc$var[[var_name]]$dim |> map_chr(~ .x$name)
+    data_shape <- ncvar_get(nc, var_name) |> dim()
+    has_depth  <- any(str_detect(var_dims, regex("depth|lev|olevel", ignore_case = TRUE)))
+
+    nc_close(nc)
+
+    cat("\n", strrep("-", 60), "\n")
+    cat("Variable  :", var_name, "\n")
+    cat("Model     :", model, "\n")
+    cat("File      :", basename(filepath), "\n")
+    cat("Var dims  :", paste(var_dims, collapse = " x "), "\n")
+    cat("Array dim :", paste(data_shape, collapse = " x "), "\n")
+    cat("Has depth :", has_depth, "\n")
+
+    tibble(
+      Variable   = var_name,
+      Model      = model,
+      File       = basename(filepath),
+      Dimensions = paste(var_dims, collapse = " x "),
+      Shape      = paste(data_shape, collapse = " x "),
+      Has_depth  = has_depth
+    )
+  })
+}
+
+# Run inspection for all three variables and print a combined summary table
+# dim_check <- variables %>%
+#   pmap_dfr(function(var_name, data_dir) {
+#     inspect_nc_dims(var_name, data_dir)
+#   })
+
+library(tidyverse)
+dim_check <- inspect_nc_dims("zooc", "/Volumes/T9/ClimateData/zooc/merged")
+
+
+cat("\n", strrep("=", 60), "\n")
+cat("DIMENSIONALITY SUMMARY\n")
+cat(strrep("=", 60), "\n")
+print(dim_check)
 
