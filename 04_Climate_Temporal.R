@@ -148,6 +148,7 @@ individual_plots <- map(variables, function(var) {
       plot_layout(guides = "collect") +
       plot_annotation(
         title = var_labels[[var]],
+        theme = theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 14))
       ) &
       theme(legend.position = "bottom"),
     n_panels = length(models_with_data)
