@@ -20,7 +20,7 @@ scenario_order <- c(
   "ssp370",
   # "ssp434",
   # "ssp460",
-  "ssp534-over",
+  # "ssp534-over",
   "ssp585"
 )
 scenario_labels <- c(
@@ -30,7 +30,7 @@ scenario_labels <- c(
   "SSP3-7.0",
   # "SSP4-3.4",
   # "SSP4-6.0",
-  "SSP5-3.4-over",
+  # "SSP5-3.4-over",
   "SSP5-8.5"
 )
 

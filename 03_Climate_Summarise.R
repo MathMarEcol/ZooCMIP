@@ -11,10 +11,13 @@
 # different in the integration. see below
 # Is it possible that “you" are computing the percent change in each grid cell then 
 # averaging them without area or biomass weighting? Noting all the large increasing 
-# occur in the smallest high lattude grid cells. To be safe, order of operations wise, 
+# occur in the smallest high lattude grid cells. 
+# 
+# **To be safe, order of operations wise, 
 # id globally integrate depth integrated zooplankton biomass (multiplying by each grid 
 # cells explicit volume) then compute the percent change directly on that globally 
 # integrated timeseries.
+# 
 # As far as model selections, CanESM5 and CanSEM5-CanOE use the same ocean model but 
 # different BGC models. CanOE is more complex with 2P2Z. I dont see a strong reason to 
 # exclude either (I find it informative to include the outliers/wonky ones), but if CMOC 
@@ -334,8 +337,9 @@ process_spatial_change <- function(var_name, data_dir, model, variant, scenario)
 
   # Extract spatial means for both periods
   tryCatch({
-    baseline_rast <- extract_spatial_mean(hist_file, var_name, 1995, 2014)
-    future_rast <- extract_spatial_mean(scen_file, var_name, 2080, 2100)
+    # baseline_rast <- extract_spatial_mean(hist_file, var_name, 1995, 2014)
+    baseline_rast <- extract_spatial_mean(hist_file, var_name, 2015, 2024)
+    future_rast <- extract_spatial_mean(scen_file, var_name, 2091, 2100)
 
     if (is.null(baseline_rast) || is.null(future_rast)) {
       return(NULL)

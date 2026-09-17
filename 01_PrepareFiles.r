@@ -5,7 +5,7 @@
 library(tidyverse)
 
 # List all .nc files in the raw folder
-files <- list.files("/Volumes/T9/raw", pattern = "\\.nc$", full.names = FALSE)
+files <- list.files("/Volumes/T9/ClimateData/zmeso/regridded/", pattern = "\\.nc$", full.names = FALSE)
 
 # Parse the filenames into components
 df <- tibble(filename = files) %>%
@@ -102,7 +102,7 @@ late_starts <- df %>%
   group_by(variable, model, experiment, variant) %>%
   summarise(first_start = min(start_time), .groups = "drop") %>%
   mutate(
-    required_start = if_else(experiment == "historical", "195001", "201501"),
+    required_start = if_else(experiment == "historical", "19500101", "20150101"),
     starts_late = first_start > required_start
   ) %>%
   filter(starts_late) %>%

@@ -1,7 +1,7 @@
 library(hotrstuff)
 library(tidyverse)
 
-base_dir <- file.path("", "Volumes", "T9")
+base_dir <- file.path("", "Volumes", "T9", "ClimateData")
 
 var <- "zmeso"
 
@@ -21,7 +21,7 @@ htr_merge_files(
   outdir = file.path(base_dir, var, "merged"), # output directory
   year_start = 1950, # earliest year across all the scenarios considered (e.g., historical, ssp126, ssp245, ssp585)
   year_end = 2100, # latest year across all the scenarios considered
-  ncores = 3,
+  ncores = 10,
 )
 
 # Warning x17 with zmicro
@@ -29,21 +29,21 @@ htr_merge_files(
 
 
 #
-# htr_change_freq(
-#   freq = "yearly",
-#   indir = file.path(base_dir, var, "merged"), # input directory
-#   outdir = file.path(base_dir, var, "annual"),
-#   ncores = 3
-# )
+htr_change_freq(
+  freq = "yearly",
+  indir = file.path(base_dir, var, "merged"), # input directory
+  outdir = file.path(base_dir, var, "annual"),
+  ncores = 10
+)
 #
 #
-# htr_regrid_esm(
-#   indir = file.path(base_dir, var, "annual"),
-#   outdir = file.path(base_dir, var, "regridded"),
-#   cell_res = 0.5,
-#   layer = "annual",
-#   ncores = 3
-# )
+htr_regrid_esm(
+  indir = file.path(base_dir, var, "annual"),
+  outdir = file.path(base_dir, var, "regridded"),
+  cell_res = 0.5,
+  layer = "annual",
+  ncores = 10
+)
 
 
 
