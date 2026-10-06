@@ -1,4 +1,3 @@
-
 library(tidyverse)
 
 # ---------------------------------------------------------------------------
@@ -20,7 +19,7 @@ all_dat <- readr::read_csv(
   mutate(
     Variable = factor(Variable, levels = vars),
     Scenario = factor(Scenario),
-    Model    = factor(Model)
+    Model = factor(Model)
   )
 
 # Only keep the four "headline" SSPs that appear in the sketch
@@ -50,34 +49,42 @@ dodge <- position_dodge(width = 0.6)
 
 # Colour palette for the three variables
 var_colours <- c(
-  zooc   = "#1b7837",   # dark green  — total zooplankton
-  zmicro = "#762a83",   # purple      — microzooplankton
-  zmeso  = "#d6604d"    # red-orange  — mesozooplankton
+  zooc = "#1b7837", # dark green  — total zooplankton
+  zmicro = "#762a83", # purple      — microzooplankton
+  zmeso = "#d6604d" # red-orange  — mesozooplankton
 )
 
-p_new <- ggplot(plot_dat,
-  aes(x = Scenario, y = Mean_percent_change, colour = Variable, fill = Variable)) +
+p_new <- ggplot(
+  plot_dat,
+  aes(x = Scenario, y = Mean_percent_change, colour = Variable, fill = Variable)
+) +
 
   # --- background: individual model points (small, semi-transparent) -------
   geom_point(
     aes(group = Variable),
-    position = position_jitterdodge(dodge.width = 0.6, jitter.width = 0.25, seed = 42),
-    shape  = 16,
-    size   = 1.5,
-    alpha  = 0.35
+    position = position_jitterdodge(
+      dodge.width = 0.6,
+      jitter.width = 0.25,
+      seed = 42
+    ),
+    shape = 16,
+    size = 1.5,
+    alpha = 0.35
   ) +
 
   # --- foreground: SD errorbars --------------------------------------------
   geom_errorbar(
     data = summary_dat,
-    aes(y    = mean_pct,
-        ymin = mean_pct - sd_pct,
-        ymax = mean_pct + sd_pct,
-        group = Variable),
+    aes(
+      y = mean_pct,
+      ymin = mean_pct - sd_pct,
+      ymax = mean_pct + sd_pct,
+      group = Variable
+    ),
     position = dodge,
-    width    = 0.25,
+    width = 0.25,
     linewidth = 0.8,
-    alpha    = 0.9
+    alpha = 0.9
   ) +
 
   # --- foreground: mean point ----------------------------------------------
@@ -85,24 +92,24 @@ p_new <- ggplot(plot_dat,
     data = summary_dat,
     aes(y = mean_pct, group = Variable),
     position = dodge,
-    shape    = 21,
-    size     = 3.5,
-    stroke   = 0.8,
-    colour   = "white",
-    fill     = NA          # overridden below via scale_fill_manual
+    shape = 21,
+    size = 3.5,
+    stroke = 0.8,
+    colour = "white",
+    fill = NA # overridden below via scale_fill_manual
   ) +
   # Filled mean point on top (separate layer so fill shows through white stroke)
   geom_point(
     data = summary_dat,
     aes(y = mean_pct, group = Variable),
     position = dodge,
-    shape    = 21,
-    size     = 3.5,
-    stroke   = 0.8
+    shape = 21,
+    size = 3.5,
+    stroke = 0.8
   ) +
 
   # --- reference line at zero ----------------------------------------------
-  geom_hline(yintercept = 0, linetype = "dashed", colour = "grey50", linewidth = 0.5) +
+  geom_hline(yintercept = 0, colour = "grey50", linewidth = 0.5) +
 
   # --- scales & labels -----------------------------------------------------
   scale_colour_manual(
@@ -121,19 +128,33 @@ p_new <- ggplot(plot_dat,
       ssp585 = "Very High (SSP5-8.5)"
     )
   ) +
+  geom_vline(
+    xintercept = c(1.5, 2.5, 3.5),
+    colour = "grey80",
+    linewidth = 0.4,
+    linetype = "solid"
+  ) +
   labs(
-    x       = NULL,
-    y       = "Change in zooplankton biomass (%)",
+    x = NULL,
+    y = "Change in zooplankton biomass (%)",
     fill = NULL,
     colour = NULL
   ) +
-  theme_bw(base_size = 13) +
+  theme_bw(base_size = 11) +
   theme(
-    legend.position  = c(0.1, 0.1),
+    text = element_text(family = "Helvetica"),
+    legend.position = c(0.1, 0.1),
     legend.direction = "vertical",
+    legend.background = element_blank(),
+    legend.key = element_blank(),
     panel.grid.major.x = element_blank()
   )
 
 ggsave("Figures/PercentChange.pdf", plot = p_new, width = 10, height = 6)
-ggsave("Figures/PercentChange.png", dpi = 600, plot = p_new, width = 10, height = 6)
-
+ggsave(
+  "Figures/PercentChange.png",
+  dpi = 600,
+  plot = p_new,
+  width = 10,
+  height = 6
+)
