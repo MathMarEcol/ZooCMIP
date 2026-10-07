@@ -11,8 +11,7 @@
 #
 #   1. ENSEMBLE MEAN % CHANGE: average Hist_mean and Future_mean across
 #      models at each pixel, then compute % change from those two ensemble
-#      means. This avoids per-model division by near-zero baseline values
-#      (see design note d in 06_Climate_Review.R).
+#      means. This avoids per-model division by near-zero baseline values.
 #
 #   2. MODEL AGREEMENT %: at each pixel, count how many models have the same
 #      sign of Absolute_change as the ensemble mean Absolute_change, divided
@@ -168,9 +167,8 @@ build_ensemble_maps <- function(variable, scenario) {
   names(abs_stack) <- meta$Model
 
   # --- Ensemble means -------------------------------------------------------
-  # na.rm = TRUE: a pixel masked to NA in one model (invalid baseline - see
-  # design note d in 06_Climate_Review.R) simply drops out of that pixel's
-  # mean rather than poisoning it.
+  # na.rm = TRUE: a pixel masked to NA in one model simply drops out of that
+  # pixel's mean rather than poisoning it.
   ensemble_hist <- mean(hist_stack, na.rm = TRUE)
   ensemble_fut <- mean(fut_stack, na.rm = TRUE)
 
@@ -457,4 +455,25 @@ ggsave(
   width = 10,
   height = 8,
   dpi = 600
+)
+
+ggsave(
+  "Figures/ModelAgreementCount.pdf",
+  plot = agreement_grid,
+  width = 10,
+  height = 8
+)
+
+p_compile <- wrap_plots(
+  free(p_new),
+  free(mean_change_grid),
+  ncol = 1,
+  heights = c(1, 3)
+)
+
+ggsave(
+  "Figures/Compilation.pdf",
+  plot = p_compile,
+  width = 10,
+  height = 8
 )
