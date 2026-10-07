@@ -251,80 +251,48 @@ base_map_theme <- function(base_size = 12) {
     )
 }
 
-#' One panel of the ensemble MEAN % CHANGE grid.
+# Pre-built fill scales — defined once and passed into plot_panel() so the
+# scale specification lives in exactly one place per figure type.
+scale_mean_change <- scale_fill_gradient2(
+  low = "red",
+  mid = "white",
+  high = "blue",
+  midpoint = 0,
+  limits = c(-50, 50),
+  na.value = "transparent",
+  name = "Mean zooplankton ensemble change (%)",
+  oob = scales::squish
+)
+
+scale_agreement <- scale_fill_viridis_c(
+  option = "viridis",
+  limits = c(0, 100),
+  breaks = c(0, 25, 50, 75, 100),
+  labels = c("0%", "25%", "50%", "75%", "100%"),
+  na.value = "transparent",
+  name = "Model agreement (%)"
+)
+
+#' One panel of either ensemble-map figure.
 #'
-#' @param show_row_label Scenario label placed on the LEFT (used for the
-#'   first column only, since rows = Scenario in the new orientation).
-#' @param show_col_title Variable title placed on TOP (used for the first
-#'   row only, since columns = Variable in the new orientation).
-plot_mean_change_panel <- function(
-  mean_rast,
+#' @param rast      SpatRaster to display (mean % change or agreement %).
+#' @param scale_layer A ggplot2 scale object (scale_mean_change or
+#'   scale_agreement) passed in so the function is reusable for both figures.
+#' @param show_row_label Scenario label placed on the LEFT (first column only,
+#'   since rows = Scenario).
+#' @param show_col_title Variable title placed on TOP (first row only, since
+#'   columns = Variable).
+plot_panel <- function(
+  rast,
+  scale_layer,
   show_row_label = NULL,
   show_col_title = NULL
 ) {
   p <- ggplot() +
-    geom_spatraster(data = mean_rast) +
+    geom_spatraster(data = rast) +
     geom_sf(data = ee_boundary, color = "gray40", linewidth = 0.3, fill = NA) +
     geom_sf(data = world, color = "grey80", linewidth = 0.2, fill = "grey50") +
-    scale_fill_gradient2(
-      low = "red",
-      mid = "white",
-      high = "blue",
-      midpoint = 0,
-      limits = c(-50, 50),
-      na.value = "transparent",
-      name = "Mean zooplankton ensemble change (%)",
-      oob = scales::squish
-    ) +
-    coord_sf(
-      crs = "EPSG:8857",
-      xlim = c(-17243959, 17243959),
-      ylim = c(-8343134, 8343134),
-      expand = FALSE
-    ) +
-    base_map_theme()
-
-  if (!is.null(show_row_label)) {
-    p <- p +
-      labs(y = show_row_label) +
-      theme(axis.title.y = element_text(size = 12, face = "plain", angle = 90))
-  }
-  if (!is.null(show_col_title)) {
-    p <- p +
-      ggtitle(show_col_title) +
-      theme(plot.title = element_text(size = 12, face = "plain", hjust = 0.5))
-  }
-
-  p
-}
-
-#' One panel of the MODEL AGREEMENT % grid.
-#'
-#' Uses a sequential fill scale from 0 to 100 (%), fixed across every panel
-#' and variable — since agreement is now expressed as a percentage of the
-#' models with valid data at each pixel, the scale is always 0-100 regardless
-#' of ensemble size. This allows a single shared legend for the whole figure.
-#'
-#' @param show_row_label Scenario label placed on the LEFT (first column
-#'   only).
-#' @param show_col_title Variable title placed on TOP (first row only).
-plot_agreement_panel <- function(
-  agreement_rast,
-  show_row_label = NULL,
-  show_col_title = NULL
-) {
-  p <- ggplot() +
-    geom_spatraster(data = agreement_rast) +
-    geom_sf(data = ee_boundary, color = "gray40", linewidth = 0.3, fill = NA) +
-    geom_sf(data = world, color = "grey80", linewidth = 0.2, fill = "grey50") +
-    scale_fill_viridis_c(
-      option = "viridis",
-      limits = c(0, 100),
-      breaks = c(0, 25, 50, 75, 100),
-      labels = c("0%", "25%", "50%", "75%", "100%"),
-      na.value = "transparent",
-      name = "Model agreement (%)"
-    ) +
+    scale_layer +
     coord_sf(
       crs = "EPSG:8857",
       xlim = c(-17243959, 17243959),
@@ -374,17 +342,10 @@ n_scn <- length(scenario_order)
 #'
 #' @param variable One of "zooc", "zmicro", "zmeso".
 #' @param kind "mean" or "agreement".
-#' @param collect_own_legend If FALSE (default for both kinds now), panels
-#'   are returned with their individual (identical) legends left INTACT so
-#'   that a later `plot_layout(guides = "collect")` applied ONCE across the
-#'   full combined grid can merge them into a SINGLE shared legend. Both
-#'   figure types now share a fixed scale across all panels (mean: -50 to
-#'   50%; agreement: 0 to 100%), so one legend per figure is sufficient.
 #' @return A patchwork object: 4 stacked panels.
 build_variable_column <- function(
   variable,
-  kind = c("mean", "agreement"),
-  collect_own_legend = FALSE
+  kind = c("mean", "agreement")
 ) {
   kind <- match.arg(kind)
   is_first_var <- variable == vars[1]
@@ -416,86 +377,60 @@ build_variable_column <- function(
     }
 
     panels[[j]] <- if (kind == "mean") {
-      plot_mean_change_panel(
+      plot_panel(
         res$mean_pct,
+        scale_mean_change,
         show_row_label = row_label,
         show_col_title = col_title
       )
     } else {
-      plot_agreement_panel(
+      plot_panel(
         res$agreement,
+        scale_agreement,
         show_row_label = row_label,
         show_col_title = col_title
       )
     }
   }
 
-  col <- wrap_plots(panels, ncol = 1)
-
-  if (collect_own_legend) {
-    col <- col +
-      plot_layout(guides = "collect") &
-      theme(
-        legend.position = "bottom",
-        legend.key.width = unit(1.2, "cm"),
-        legend.key.height = unit(0.5, "cm")
-      )
-  }
-
-  col
+  wrap_plots(panels, ncol = 1)
 }
 
-# Both figure types now use a fixed scale across all panels, so build all
-# columns WITHOUT per-column legend collection, then collect ONCE across
-# the full combined grid below — patchwork merges identical guides into a
-# single shared legend, giving 1 centred legend per figure.
-agree_columns <- purrr::map(
-  vars,
-  build_variable_column,
-  kind = "agreement",
-  collect_own_legend = FALSE
-)
-mean_columns <- purrr::map(
-  vars,
-  build_variable_column,
-  kind = "mean",
-  collect_own_legend = FALSE
-)
+# Both figure types use a fixed scale across all panels; legends are
+# collected ONCE across the full combined grid below — patchwork merges
+# identical guides into a single shared legend per figure.
+agree_columns <- purrr::map(vars, build_variable_column, kind = "agreement")
+mean_columns <- purrr::map(vars, build_variable_column, kind = "mean")
 
-mean_change_grid <- wrap_plots(mean_columns, ncol = n_var) +
-  plot_layout(guides = "collect") +
-  plot_annotation(
-    theme = theme(
-      plot.title = element_text(
-        hjust = 0.5,
-        face = "bold",
-        size = 14,
-        vjust = 2
+#' Assemble a 3-column patchwork grid from pre-built variable columns,
+#' collecting legends into a single shared legend at the bottom.
+#'
+#' @param columns A list of 3 patchwork column objects (one per variable).
+#' @return A patchwork object ready for ggsave().
+build_figure_grid <- function(columns) {
+  wrap_plots(columns, ncol = n_var) +
+    plot_layout(guides = "collect") +
+    plot_annotation(
+      theme = theme(
+        plot.title = element_text(
+          hjust = 0.5,
+          face = "bold",
+          size = 14,
+          vjust = 2
+        )
       )
+    ) &
+    theme(
+      legend.position = "bottom",
+      legend.key.width = unit(4, "cm"),
+      legend.key.height = unit(0.6, "cm"),
+      legend.title = element_text(size = 12, hjust = 0.5),
+      legend.text = element_text(size = 10)
     )
-  ) &
-  theme(
-    legend.position = "bottom",
-    legend.key.width = unit(4, "cm"),
-    legend.key.height = unit(0.6, "cm"),
-    legend.title = element_text(size = 12),
-    legend.text = element_text(size = 10)
-  )
+}
 
-agreement_grid <- wrap_plots(agree_columns, ncol = n_var) +
-  plot_layout(guides = "collect") +
-  plot_annotation(
-    theme = theme(
-      plot.title = element_text(hjust = 0.5, face = "bold", size = 14)
-    )
-  ) &
-  theme(
-    legend.position = "bottom",
-    legend.key.width = unit(4, "cm"),
-    legend.key.height = unit(0.6, "cm"),
-    legend.title = element_text(size = 12, hjust = 0.5),
-    legend.text = element_text(size = 10)
-  )
+mean_change_grid <- build_figure_grid(mean_columns)
+agreement_grid <- build_figure_grid(agree_columns)
 
 ggsave(
   "Figures/EnsembleMeanPercentChange.pdf",

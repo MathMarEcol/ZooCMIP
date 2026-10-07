@@ -140,7 +140,7 @@ p_new <- ggplot(
     fill = NULL,
     colour = NULL
   ) +
-  theme_bw(base_size = 11) +
+  theme_bw(base_size = 14) +
   theme(
     text = element_text(family = "Helvetica"),
     legend.position = c(0.1, 0.1),
