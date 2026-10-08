@@ -8,6 +8,7 @@ library(tidyverse)
 # ---------------------------------------------------------------------------
 
 vars <- c("zooc", "zmicro", "zmeso")
+sz <- 11
 
 # Read the single merged CSV (written by 06_Climate_Review.R).
 # Rows with Model == "All models" are the pre-computed multimodel mean ± SD
@@ -83,7 +84,7 @@ p_new <- ggplot(
     ),
     position = dodge,
     width = 0.25,
-    linewidth = 0.8,
+    linewidth = 0.6,
     alpha = 0.9
   ) +
 
@@ -93,7 +94,7 @@ p_new <- ggplot(
     aes(y = mean_pct, group = Variable),
     position = dodge,
     shape = 21,
-    size = 3.5,
+    size = 2.5,
     stroke = 0.8,
     colour = "white",
     fill = NA # overridden below via scale_fill_manual
@@ -104,7 +105,7 @@ p_new <- ggplot(
     aes(y = mean_pct, group = Variable),
     position = dodge,
     shape = 21,
-    size = 3.5,
+    size = 2.5,
     stroke = 0.8
   ) +
 
@@ -136,18 +137,21 @@ p_new <- ggplot(
   ) +
   labs(
     x = NULL,
-    y = "Change in zooplankton biomass (%)",
+    y = expression(Delta ~ "Biomass (%)"),
     fill = NULL,
     colour = NULL
   ) +
-  theme_bw(base_size = 14) +
+  theme_bw(base_size = sz, base_family = "Helvetica") +
   theme(
-    text = element_text(family = "Helvetica"),
-    legend.position = c(0.1, 0.1),
+    text = element_text(family = "Helvetica", size = sz),
+    legend.position = c(0.05, 0.22),
     legend.direction = "vertical",
     legend.background = element_blank(),
     legend.key = element_blank(),
-    panel.grid.major.x = element_blank()
+    legend.text = element_text(size = sz),
+    panel.grid.major.x = element_blank(),
+    axis.title.y = element_text(size = sz),
+    axis.text = element_text(size = sz, colour = "black")
   )
 
 ggsave("Figures/PercentChange.pdf", plot = p_new, width = 10, height = 6)

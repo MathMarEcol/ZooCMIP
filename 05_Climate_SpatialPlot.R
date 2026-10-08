@@ -21,9 +21,6 @@
 #      every panel directly comparable regardless of ensemble size, and
 #      allows a single shared legend across all variables.
 #
-# CanESM5/CanESM5-CanOE are included (unlike the point-range plot in
-# 07_Climate_Plot.R which still excludes CanESM5 at the user's request).
-#
 # LAYOUT: rows = Scenario (4), columns = Variable (3).
 # ---------------------------------------------------------------------------
 library(tidyverse)
@@ -34,12 +31,14 @@ library(patchwork)
 
 scenario_order <- c("ssp126", "ssp245", "ssp370", "ssp585")
 scenario_labels <- c(
-  "Low (SSP1-2.6)",
-  "Medium (SSP2-4.5)",
-  "High (SSP3-7.0)",
-  "Very High (SSP5-8.5)"
+  "Low\n(SSP1-2.6)",
+  "Medium\n(SSP2-4.5)",
+  "High\n(SSP3-7.0)",
+  "Very High\n(SSP5-8.5)"
 )
 scenario_label_map <- setNames(scenario_labels, scenario_order)
+
+sz <- 11
 
 vars <- c("zooc", "zmicro", "zmeso")
 
@@ -230,7 +229,7 @@ build_ensemble_maps <- function(variable, scenario) {
 
 #' Common map theme/scaffolding shared by both ensemble-map figures below,
 #' matching the visual style already established in 05_Climate_Spatial.R.
-base_map_theme <- function(base_size = 12) {
+base_map_theme <- function(base_size = sz) {
   theme_minimal(base_size = base_size) +
     theme(
       text = element_text(family = "Helvetica"),
@@ -242,9 +241,9 @@ base_map_theme <- function(base_size = 12) {
       plot.title = element_blank(),
       legend.key.height = unit(0.6, "cm"),
       legend.key.width = unit(1, "cm"),
-      legend.title = element_text(size = 12, hjust = 0.5),
+      legend.title = element_text(size = sz, hjust = 0.5),
       legend.title.position = "top",
-      legend.text = element_text(size = 12),
+      legend.text = element_text(size = sz),
       plot.margin = margin(2, 2, 2, 2)
     )
 }
@@ -302,14 +301,14 @@ plot_panel <- function(
   if (!is.null(show_row_label)) {
     p <- p +
       labs(y = show_row_label) +
-      theme(axis.title.y = element_text(size = 12, face = "plain", angle = 90))
+      theme(axis.title.y = element_text(size = sz, face = "plain", angle = 90))
   }
   if (!is.null(show_col_title)) {
     p <- p +
       ggtitle(show_col_title) +
       theme(
         plot.title = element_text(
-          size = 12,
+          size = sz,
           face = "plain",
           hjust = 0.5,
           vjust = 2
@@ -335,100 +334,92 @@ ensemble_grid <- tidyr::expand_grid(
 n_var <- length(vars)
 n_scn <- length(scenario_order)
 
-#' Build one full variable "column": a 4-row (Scenario) stack of panels for
-#' a single variable, for either the mean-change or agreement-% figure.
+#' Build a full 4-row x 3-column patchwork grid for either the mean-change
+#' or agreement-% figure.
 #'
-#' @param variable One of "zooc", "zmicro", "zmeso".
+#' Panels are assembled in row-major order (outer loop = Scenario rows,
+#' inner loop = Variable columns) so that wrap_plots(..., ncol = n_var)
+#' places them correctly. Row labels (Scenario) appear on the left of the
+#' first column; column titles (Variable) appear above the first row.
+#'
 #' @param kind "mean" or "agreement".
-#' @return A patchwork object: 4 stacked panels.
-build_variable_column <- function(
-  variable,
-  kind = c("mean", "agreement")
-) {
+#' @return A patchwork object ready for ggsave().
+build_figure_grid <- function(kind = c("mean", "agreement")) {
   kind <- match.arg(kind)
-  is_first_var <- variable == vars[1]
+  scale_layer <- if (kind == "mean") scale_mean_change else scale_agreement
 
-  panels <- vector("list", n_scn)
+  panels <- vector("list", n_scn * n_var)
+  idx <- 1L
 
-  for (j in seq_along(scenario_order)) {
-    scenario <- scenario_order[j]
-    row <- ensemble_grid |>
-      dplyr::filter(Variable == variable, Scenario == scenario)
-    res <- row$result[[1]]
+  for (i in seq_along(scenario_order)) {
+    scenario <- scenario_order[i]
+    for (j in seq_along(vars)) {
+      variable <- vars[j]
 
-    row_label <- if (is_first_var) scenario_label_map[[scenario]] else NULL
-    col_title <- if (j == 1) var_labels[[variable]] else NULL
+      res <- ensemble_grid |>
+        dplyr::filter(Variable == variable, Scenario == scenario) |>
+        dplyr::pull(result) |>
+        magrittr::extract2(1)
 
-    if (is.null(res$mean_pct)) {
-      panels[[j]] <- ggplot() +
-        annotate(
-          "text",
-          x = 0,
-          y = 0,
-          label = "No data",
-          size = 3,
-          color = "gray50"
-        ) +
-        theme_void() +
-        theme(plot.margin = margin(2, 2, 2, 2))
-      next
-    }
+      row_label <- if (j == 1) scenario_label_map[[scenario]] else NULL
+      col_title <- if (i == 1) var_labels[[variable]] else NULL
 
-    panels[[j]] <- if (kind == "mean") {
-      plot_panel(
-        res$mean_pct,
-        scale_mean_change,
-        show_row_label = row_label,
-        show_col_title = col_title
-      )
-    } else {
-      plot_panel(
-        res$agreement,
-        scale_agreement,
-        show_row_label = row_label,
-        show_col_title = col_title
-      )
+      panels[[idx]] <- if (is.null(res$mean_pct)) {
+        ggplot() +
+          annotate(
+            "text",
+            x = 0,
+            y = 0,
+            label = "No data",
+            size = 3,
+            color = "gray50"
+          ) +
+          theme_void() +
+          theme(plot.margin = margin(2, 2, 2, 2))
+      } else {
+        plot_panel(
+          if (kind == "mean") res$mean_pct else res$agreement,
+          scale_layer,
+          show_row_label = row_label,
+          show_col_title = col_title
+        )
+      }
+
+      idx <- idx + 1L
     }
   }
 
-  wrap_plots(panels, ncol = 1)
-}
-
-# Both figure types use a fixed scale across all panels; legends are
-# collected ONCE across the full combined grid below — patchwork merges
-# identical guides into a single shared legend per figure.
-agree_columns <- purrr::map(vars, build_variable_column, kind = "agreement")
-mean_columns <- purrr::map(vars, build_variable_column, kind = "mean")
-
-#' Assemble a 3-column patchwork grid from pre-built variable columns,
-#' collecting legends into a single shared legend at the bottom.
-#'
-#' @param columns A list of 3 patchwork column objects (one per variable).
-#' @return A patchwork object ready for ggsave().
-build_figure_grid <- function(columns) {
-  wrap_plots(columns, ncol = n_var) +
+  wrap_plots(panels, ncol = n_var) +
     plot_layout(guides = "collect") +
     plot_annotation(
       theme = theme(
         plot.title = element_text(
           hjust = 0.5,
-          face = "bold",
-          size = 14,
+          face = "plain",
+          size = sz,
           vjust = 2
         )
       )
     ) &
     theme(
+      text = element_text(size = sz, family = "Helvetica"),
       legend.position = "bottom",
       legend.key.width = unit(4, "cm"),
       legend.key.height = unit(0.6, "cm"),
-      legend.title = element_text(size = 12, hjust = 0.5),
-      legend.text = element_text(size = 10)
+      legend.title = element_text(
+        size = sz,
+        hjust = 0.5,
+        family = "Helvetica"
+      ),
+      legend.text = element_text(size = sz, family = "Helvetica"),
+      axis.title = element_text(size = sz, family = "Helvetica")
     )
 }
 
-mean_change_grid <- build_figure_grid(mean_columns)
-agreement_grid <- build_figure_grid(agree_columns)
+
+mean_change_grid <- build_figure_grid("mean")
+
+agreement_grid <- build_figure_grid("agreement")
 
 ggsave(
   "Figures/EnsembleMeanPercentChange.pdf",
@@ -457,23 +448,25 @@ ggsave(
   dpi = 600
 )
 
-ggsave(
-  "Figures/ModelAgreementCount.pdf",
-  plot = agreement_grid,
-  width = 10,
-  height = 8
-)
-
 p_compile <- wrap_plots(
   free(p_new),
-  free(mean_change_grid),
+  wrap_elements(mean_change_grid),
   ncol = 1,
-  heights = c(1, 3)
-)
+  heights = c(1, 4)
+) +
+  plot_annotation(tag_levels = list(c("a", "b")))
 
 ggsave(
   "Figures/Compilation.pdf",
   plot = p_compile,
   width = 10,
-  height = 8
+  height = 10
+)
+
+ggsave(
+  "Figures/Compilation.png",
+  plot = p_compile,
+  dpi = 1000,
+  width = 10,
+  height = 10
 )
